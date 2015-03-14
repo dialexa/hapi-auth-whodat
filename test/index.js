@@ -37,7 +37,7 @@ describe('Authentication', function(){
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
-      server.auth.strategy('default', 'who-dat', 'required', {
+      server.auth.strategy('default', 'whodat', 'required', {
         url: 'https://my.app.com/credentials',
         method: 'POST',
         auth: {
@@ -73,7 +73,7 @@ describe('Authentication', function(){
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
-      server.auth.strategy('default', 'who-dat', 'required', {
+      server.auth.strategy('default', 'whodat', 'required', {
         url: 'https://my.app.com/credentials?app=foo',
         method: 'GET',
         auth: {
@@ -109,7 +109,7 @@ describe('Authentication', function(){
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
-      server.auth.strategy('default', 'who-dat', 'required', {
+      server.auth.strategy('default', 'whodat', 'required', {
         url: 'https://my.app.com/credentials?app=foo',
         method: 'GET'
       });
@@ -142,7 +142,7 @@ describe('Authentication', function(){
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
-      server.auth.strategy('default', 'who-dat', 'required', {
+      server.auth.strategy('default', 'whodat', 'required', {
         url: 'https://my.app.com/credentials',
         method: 'POST',
         objectName: 'foo'
@@ -176,7 +176,7 @@ describe('Authentication', function(){
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
-      server.auth.strategy('default', 'who-dat', 'required', {
+      server.auth.strategy('default', 'whodat', 'required', {
         url: 'https://my.app.com/credentials',
         method: 'POST',
         objectName: null
@@ -209,7 +209,7 @@ describe('Authentication', function(){
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
-      server.auth.strategy('default', 'who-dat', 'required', {
+      server.auth.strategy('default', 'whodat', 'required', {
         url: 'https://my.app.com/credentials',
         usernameProperty: 'user_id',
         passwordProperty: 'secretword'
@@ -243,7 +243,7 @@ describe('Authentication', function(){
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
-      server.auth.strategy('default', 'who-dat', 'required', {
+      server.auth.strategy('default', 'whodat', 'required', {
         url: 'https://my.app.com/credentials',
         method: 'POST',
         objectName: null,
@@ -293,7 +293,7 @@ describe('Pre-auth', function(){
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
-      server.auth.strategy('default', 'who-dat', 'required', {
+      server.auth.strategy('default', 'whodat', 'required', {
         url: 'https://my.app.com/credentials',
         method: 'POST',
         auth: {
@@ -329,7 +329,7 @@ describe('Pre-auth', function(){
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
-      server.auth.strategy('default', 'who-dat', 'required', {
+      server.auth.strategy('default', 'whodat', 'required', {
         url: 'https://my.app.com/credentials',
         method: 'POST',
         auth: {
@@ -366,7 +366,7 @@ describe('Pre-auth', function(){
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
-      server.auth.strategy('default', 'who-dat', 'required', {
+      server.auth.strategy('default', 'whodat', 'required', {
         url: 'https://my.app.com/credentials',
         method: 'POST',
         auth: {
@@ -403,7 +403,7 @@ describe('Pre-auth', function(){
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
-      server.auth.strategy('default', 'who-dat', 'required', {
+      server.auth.strategy('default', 'whodat', 'required', {
         url: 'https://my.app.com/credentials',
         method: 'POST',
         auth: {
@@ -440,7 +440,7 @@ describe('Pre-auth', function(){
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
-      server.auth.strategy('default', 'who-dat', 'required', {
+      server.auth.strategy('default', 'whodat', 'required', {
         url: 'https://my.app.com/credentials',
         method: 'POST',
         auth: {
@@ -477,7 +477,7 @@ describe('Pre-auth', function(){
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
-      server.auth.strategy('default', 'who-dat', 'required', {
+      server.auth.strategy('default', 'whodat', 'required', {
         url: 'https://my.app.com/credentials',
         method: 'POST',
         auth: {
@@ -528,7 +528,7 @@ describe('Bad Authentication', function(){
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
-      server.auth.strategy('default', 'who-dat', 'required', {
+      server.auth.strategy('default', 'whodat', 'required', {
         url: 'https://my.app.com/credentials',
         method: 'POST',
         auth: {
@@ -565,7 +565,7 @@ describe('Bad Authentication', function(){
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
-      server.auth.strategy('default', 'who-dat', 'required', {
+      server.auth.strategy('default', 'whodat', 'required', {
         url: 'https://my.app.com/credentials',
         method: 'POST',
         auth: {
@@ -615,7 +615,7 @@ describe('Credentials object', function(){
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
-      server.auth.strategy('default', 'who-dat', 'required', {
+      server.auth.strategy('default', 'whodat', 'required', {
         url: 'https://my.app.com/credentials',
         auth: {
           username: 'me',
