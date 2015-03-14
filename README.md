@@ -1,10 +1,9 @@
 WhoDat Auth Plugin for Hapi
 ============================
 
-[![NPM](https://nodei.co/npm/hapi-auth-whodat.png)](https://nodei.co/npm/hapi-auth-whodat/)
-
 [![npm version](https://badge.fury.io/js/hapi-auth-whodat.svg)](http://badge.fury.io/js/hapi-auth-whodat)
 [![Build Status](https://travis-ci.org/dialexa/hapi-auth-whodat.svg)](https://travis-ci.org/dialexa/hapi-auth-whodat)
+[![Coverage Status](https://coveralls.io/repos/dialexa/hapi-auth-whodat/badge.svg)](https://coveralls.io/r/dialexa/hapi-auth-whodat)
 
 A BasicAuth plugin that checks credentials with an external authority.  Works with Hapi version 8 or later.
 
