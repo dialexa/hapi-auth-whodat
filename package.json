@@ -4,6 +4,7 @@
   "description": "Hapi authentication plugin that uses 3rd-party authoritative source.",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint --quiet .",
     "test": "lab -r console -t 100 -a code",
     "test-ci": "lab -r lcov -t 100 -a code | ./node_modules/.bin/coveralls"
   },
@@ -25,6 +26,7 @@
   "devDependencies": {
     "code": "^1.3.0",
     "coveralls": "^2.11.2",
+    "eslint": "^0.21.2",
     "hapi": "^8.4.0",
     "lab": "^5.5.0",
     "nock": "^1.2.0"
