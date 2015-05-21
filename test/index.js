@@ -425,7 +425,7 @@ describe('Pre-auth', function(){
         url: '/test',
         headers: { authorization: 'Foo' }
       }, function(res){
-        expect(res.statusCode).to.equal(401);
+        expect(res.statusCode).to.equal(400);
         expect(post.isDone()).to.be.false();
         done();
       });
@@ -461,6 +461,43 @@ describe('Pre-auth', function(){
         method: 'GET',
         url: '/test',
         headers: { authorization: 'Basic Bar' }
+      }, function(res){
+        expect(res.statusCode).to.equal(400);
+        expect(post.isDone()).to.be.false();
+        done();
+      });
+    });
+  });
+
+  it('should not accept a request without a valid auth header', function(done){
+    var post = nock('https://my.app.com').matchHeader('Authorization', 'Basic bWU6c2VjcmV0')
+                .post('/credentials', {
+                  credentials: { username: 'other_user', password: 'shhhhh' }
+                }).reply(200, {credentials: { authenticated: true}});
+
+    server.register(require('../'), function(err) {
+      expect(err).to.not.exist();
+      server.auth.strategy('default', 'whodat', 'required', {
+        url: 'https://my.app.com/credentials',
+        method: 'POST',
+        auth: {
+          username: 'me',
+          password: 'secret'
+        }
+      });
+
+      server.route({
+        method: 'GET',
+        path: '/test',
+        handler: function(req, reply) {
+          reply({foo: 'bar'}).code(200);
+        }
+      });
+
+      server.inject({
+        method: 'GET',
+        url: '/test',
+        headers: { authorization: 'NotBasic Bar' }
       }, function(res){
         expect(res.statusCode).to.equal(400);
         expect(post.isDone()).to.be.false();
@@ -646,3 +683,92 @@ describe('Credentials object', function(){
     });
   });
 });
+
+describe('Bearer token auth', function() {
+  var server;
+
+  beforeEach(function(done){
+    server = new Hapi.Server({debug: {request: ['error']}}).connection({ host: 'test' });
+    done();
+  });
+
+  afterEach(function(done){
+    nock.cleanAll();
+    done();
+  });
+
+  it('should accept a bearer token', function(done) {
+    var post = nock('https://my.app.com').matchHeader('Authorization', 'Basic bWU6c2VjcmV0')
+                .post('/credentials', {
+                  credentials: { token: 'asdfasdf' }
+                }).reply(200, {credentials: { authenticated: true}});
+
+    server.register(require('../'), function(err) {
+      expect(err).to.not.exist();
+      server.auth.strategy('default', 'whodat', 'required', {
+        url: 'https://my.app.com/credentials',
+        method: 'POST',
+        auth: {
+          username: 'me',
+          password: 'secret'
+        }
+      });
+
+      server.route({
+        method: 'GET',
+        path: '/test',
+        handler: function(req, reply) {
+          reply({foo: 'bar'}).code(200);
+        }
+      });
+
+      server.inject({
+        method: 'GET',
+        url: '/test',
+        headers: { authorization: 'Bearer asdfasdf' }
+      }, function(res){
+        expect(res.statusCode).to.equal(200);
+        post.done();
+        done();
+      });
+    });
+  });
+
+  it('should add the id from the credentials response', function(done) {
+    var post = nock('https://my.app.com').matchHeader('Authorization', 'Basic bWU6c2VjcmV0')
+                .post('/credentials', {
+                  credentials: { token: 'asdfasdf' }
+                }).reply(200, {credentials: { authenticated: true, id: 'other_user'}});
+
+    server.register(require('../'), function(err) {
+      expect(err).to.not.exist();
+      server.auth.strategy('default', 'whodat', 'required', {
+        url: 'https://my.app.com/credentials',
+        method: 'POST',
+        auth: {
+          username: 'me',
+          password: 'secret'
+        }
+      });
+
+      server.route({
+        method: 'GET',
+        path: '/test',
+        handler: function(req, reply) {
+          expect(req.auth.credentials.id).to.equal('other_user')
+          reply({foo: 'bar'}).code(200);
+        }
+      });
+
+      server.inject({
+        method: 'GET',
+        url: '/test',
+        headers: { authorization: 'Bearer asdfasdf' }
+      }, function(res){
+        expect(res.statusCode).to.equal(200);
+        post.done();
+        done();
+      });
+    });
+  });
+})
