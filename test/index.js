@@ -21,7 +21,7 @@ describe('Authentication', function() {
   var server;
 
   beforeEach(function(done) {
-    server = new Hapi.Server(/*{ debug: { log: [ 'error' ], request: [ 'error' ] } }*/).connection({ host: 'test' });
+    server = new Hapi.Server({ debug: { log: [ 'error' ], request: [ 'error' ] } }).connection({ host: 'test' });
     done();
   });
 
@@ -683,7 +683,8 @@ describe('Bearer token auth', function() {
   var server;
 
   beforeEach(function(done) {
-    server = new Hapi.Server().connection({ host: 'test' });
+    server = new Hapi.Server({ debug: { log: [ 'error' ], request: [ 'error' ] } });
+    server.connection({ host: '127.0.0.1' });
     done();
   });
 
@@ -763,6 +764,61 @@ describe('Bearer token auth', function() {
         expect(res.statusCode).to.equal(200);
         post.done();
         done();
+      });
+    });
+  });
+
+  it('should use the cache if provided as an option', function(done) {
+    var post = nock('https://my.app.com').matchHeader('Authorization', 'Basic bWU6c2VjcmV0')
+      .post('/credentials', { credentials: { token: 'asdfasdf' } })
+      .reply(200, { credentials: { authenticated: true, id: 'other_user' } });
+
+    server.register(require('../'), function(err) {
+      expect(err).to.not.exist();
+      server.auth.strategy('default', 'whodat', 'required', {
+        url: 'https://my.app.com/credentials',
+        method: 'POST',
+        auth: {
+          username: 'me',
+          password: 'secret'
+        },
+        cache: {
+          expiresIn: 20 * 1000,
+          segment: 'whodat'
+        }
+      });
+
+      server.route({
+        method: 'GET',
+        path: '/test',
+        handler: function(req, reply) {
+          expect(req.auth.credentials.id).to.equal('other_user');
+          reply({ foo: 'bar' }).code(200);
+        }
+      });
+
+      server.start(function(startErr) {
+        expect(startErr).to.not.exist();
+
+        server.inject({
+          method: 'GET',
+          url: '/test',
+          headers: { authorization: 'Bearer asdfasdf' }
+        }, function(res) {
+          expect(res.statusCode).to.equal(200);
+          post.done();
+
+          // second request should use cache and not need nock
+          server.inject({
+            method: 'GET',
+            url: '/test',
+            headers: { authorization: 'Bearer asdfasdf' }
+          }, function(res2) {
+            expect(res2.statusCode).to.equal(200);
+
+            server.stop(done);
+          });
+        });
       });
     });
   });
