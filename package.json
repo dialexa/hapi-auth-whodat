@@ -1,6 +1,6 @@
 {
   "name": "hapi-auth-whodat",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Hapi authentication plugin that uses 3rd-party authoritative source.",
   "main": "index.js",
   "scripts": {
