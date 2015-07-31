@@ -1,5 +1,7 @@
-var Lab = require('lab');
+'use strict';
+
 var Hapi = require('hapi');
+var Lab = require('lab');
 var nock = require('nock');
 
 var lab = exports.lab = Lab.script();
@@ -19,12 +21,7 @@ describe('Authentication', function() {
   var server;
 
   beforeEach(function(done) {
-    server = new Hapi.Server().connection({ host: 'test' });
-    done();
-  });
-
-  afterEach(function(done) {
-    nock.cleanAll();
+    server = new Hapi.Server(/*{ debug: { log: [ 'error' ], request: [ 'error' ] } }*/).connection({ host: 'test' });
     done();
   });
 
@@ -169,9 +166,8 @@ describe('Authentication', function() {
 
   it('should verify credentials with an external server without an object name', function(done) {
     var post = nock('https://my.app.com')
-                .post('/credentials', {
-                  username: 'other_user', password: 'shhhhh'
-                }).reply(200, { credentials: { authenticated: true } });
+      .post('/credentials', { username: 'other_user', password: 'shhhhh' })
+      .reply(200, { credentials: { authenticated: true } });
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
