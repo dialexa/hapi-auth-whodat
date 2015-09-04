@@ -1,6 +1,7 @@
 'use strict';
 
 var Hapi = require('hapi');
+var Joi = require('joi');
 var Lab = require('lab');
 var nock = require('nock');
 
@@ -858,6 +859,119 @@ describe('Bearer token auth', function() {
             server.stop(done);
           });
         });
+      });
+    });
+  });
+});
+
+describe('Query Param auth', function() {
+  var server;
+
+  beforeEach(function(done) {
+    server = new Hapi.Server({ debug: { log: [ 'error' ], request: [ 'error' ] } });
+    server.connection({ host: '127.0.0.1' });
+    done();
+  });
+
+  afterEach(function(done) {
+    nock.cleanAll();
+    done();
+  });
+
+  it('should take an option to set token query param name', function(done) {
+    var post = nock('https://my.app.com').matchHeader('Authorization', 'Basic bWU6c2VjcmV0')
+                .post('/credentials', {
+                  credentials: { token: 'asdfasdf' }
+                }).reply(200, { credentials: { authenticated: true } });
+
+    server.register(require('../'), function(err) {
+      expect(err).to.not.exist();
+      server.auth.strategy('default', 'whodat', 'required', {
+        url: 'https://my.app.com/credentials',
+        method: 'POST',
+        auth: {
+          username: 'me',
+          password: 'secret'
+        },
+        queryTokenName: 'access_token'
+      });
+
+      server.route({
+        method: 'GET',
+        path: '/test',
+        config: { validate: { query: Joi.object() } },
+        handler: function(req, reply) {
+          reply({ foo: 'bar' }).code(200);
+        }
+      });
+
+      server.inject('/test?access_token=asdfasdf', function(res) {
+        expect(res.statusCode).to.equal(200);
+        post.done();
+        done();
+      });
+    });
+  });
+
+  it('should default token query param name to token', function(done) {
+    var post = nock('https://my.app.com').matchHeader('Authorization', 'Basic bWU6c2VjcmV0')
+                .post('/credentials', {
+                  credentials: { token: 'asdfasdf' }
+                }).reply(200, { credentials: { authenticated: true } });
+
+    server.register(require('../'), function(err) {
+      expect(err).to.not.exist();
+      server.auth.strategy('default', 'whodat', 'required', {
+        url: 'https://my.app.com/credentials',
+        method: 'POST',
+        auth: {
+          username: 'me',
+          password: 'secret'
+        }
+      });
+
+      server.route({
+        method: 'GET',
+        path: '/test',
+        config: { validate: { query: Joi.object() } },
+        handler: function(req, reply) {
+          reply({ foo: 'bar' }).code(200);
+        }
+      });
+
+      server.inject('/test?token=asdfasdf', function(res) {
+        expect(res.statusCode).to.equal(200);
+        post.done();
+        done();
+      });
+    });
+  });
+
+  it('should take an option to turn off token as query param', function(done) {
+    server.register(require('../'), function(err) {
+      expect(err).to.not.exist();
+      server.auth.strategy('default', 'whodat', 'required', {
+        url: 'https://my.app.com/credentials',
+        method: 'POST',
+        auth: {
+          username: 'me',
+          password: 'secret'
+        },
+        allowQueryToken: false
+      });
+
+      server.route({
+        method: 'GET',
+        path: '/test',
+        config: { validate: { query: Joi.object() } },
+        handler: function(req, reply) {
+          reply({ foo: 'bar' }).code(200);
+        }
+      });
+
+      server.inject('/test?token=asdfasdf', function(res) {
+        expect(res.statusCode).to.equal(401);
+        done();
       });
     });
   });
