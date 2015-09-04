@@ -677,6 +677,45 @@ describe('Credentials object', function() {
       });
     });
   });
+
+  it('should accept a credentials object with no object name', function(done) {
+    var post = nock('https://my.app.com').matchHeader('Authorization', 'Basic bWU6c2VjcmV0')
+                .get('/credentials?username=other_user&password=shhhhh')
+                .reply(200, { authenticated: true, name: 'frank' });
+
+    server.register(require('../'), function(err) {
+      expect(err).to.not.exist();
+      server.auth.strategy('default', 'whodat', 'required', {
+        url: 'https://my.app.com/credentials',
+        auth: {
+          username: 'me',
+          password: 'secret'
+        },
+        responseObjectName: null
+      });
+
+      server.route({
+        method: 'GET',
+        path: '/test',
+        handler: function(req, reply) {
+          expect(req.auth.credentials).to.be.an.object();
+          expect(req.auth.credentials.id).to.equal('other_user');
+          expect(req.auth.credentials.name).to.equal('frank');
+          reply({ foo: 'bar' }).code(200);
+        }
+      });
+
+      server.inject({
+        method: 'GET',
+        url: '/test',
+        headers: { authorization: internals.header('other_user', 'shhhhh') }
+      }, function(res) {
+        expect(res.statusCode).to.equal(200);
+        post.done();
+        done();
+      });
+    });
+  });
 });
 
 describe('Bearer token auth', function() {
