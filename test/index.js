@@ -620,6 +620,88 @@ describe('Bad Authentication', function() {
         url: '/test',
         headers: { authorization: internals.header('other_user', 'shhhhh') }
       }, function(res) {
+        expect(res.statusCode).to.equal(401);
+        post.done();
+        done();
+      });
+    });
+  });
+
+  it('should use external error message if returned', function(done) {
+    var reqError = {
+      error: 'Bad Request',
+      message: 'child "appId" fails because ["appId" with value " ba244680-8910-4a40-9e52-0f11069fda69" fails to match the required pattern: /^(([a-f\\d]{8}(-[a-f\\d]{4}){3}-[a-f\\d]{12}?)|_internal)$/]',
+      statusCode: 400,
+      validation: { keys: [ 'name' ], source: 'params' }
+    };
+
+    var post = nock('https://my.app.com').matchHeader('Authorization', 'Basic bWU6c2VjcmV0')
+      .post('/credentials', {
+        credentials: { username: 'other_user', password: 'shhhhh' }
+      }).reply(400, reqError);
+
+    server.register(require('../'), function(err) {
+      expect(err).to.not.exist();
+      server.auth.strategy('default', 'whodat', 'required', {
+        url: 'https://my.app.com/credentials',
+        method: 'POST',
+        auth: {
+          username: 'me',
+          password: 'secret'
+        }
+      });
+
+      server.route({
+        method: 'GET',
+        path: '/test',
+        handler: function(req, reply) {
+          reply({ foo: 'bar' }).code(200);
+        }
+      });
+
+      server.inject({
+        method: 'GET',
+        url: '/test',
+        headers: { authorization: internals.header('other_user', 'shhhhh') }
+      }, function(res) {
+        expect(res.statusCode).to.equal(reqError.statusCode);
+        expect(res.result.message).to.equal(reqError.message);
+        post.done();
+        done();
+      });
+    });
+  });
+
+  it('should throw 500 on server error', function(done) {
+    var post = nock('https://my.app.com').matchHeader('Authorization', 'Basic bWU6c2VjcmV0')
+      .post('/credentials', {
+        credentials: { username: 'other_user', password: 'shhhhh' }
+      }).replyWithError('it failed horribly');
+
+    server.register(require('../'), function(err) {
+      expect(err).to.not.exist();
+      server.auth.strategy('default', 'whodat', 'required', {
+        url: 'https://my.app.com/credentials',
+        method: 'POST',
+        auth: {
+          username: 'me',
+          password: 'secret'
+        }
+      });
+
+      server.route({
+        method: 'GET',
+        path: '/test',
+        handler: function(req, reply) {
+          reply({ foo: 'bar' }).code(200);
+        }
+      });
+
+      server.inject({
+        method: 'GET',
+        url: '/test',
+        headers: { authorization: internals.header('other_user', 'shhhhh') }
+      }, function(res) {
         expect(res.statusCode).to.equal(500);
         post.done();
         done();
