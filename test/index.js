@@ -944,6 +944,62 @@ describe('Bearer token auth', function() {
       });
     });
   });
+
+  it('should use the cache on unauthenticated request', function(done) {
+    var post = nock('https://my.app.com')
+      .matchHeader('Authorization', 'Basic bWU6c2VjcmV0')
+      .post('/credentials', {
+        credentials: { username: 'other_user', password: 'shhhhh' }
+      }).reply(200, { credentials: { result: 'failed' } });
+
+    var shot = {
+      method: 'GET',
+      url: '/test',
+      headers: { authorization: internals.header('other_user', 'shhhhh') }
+    };
+
+    server.register(require('../'), function(err) {
+      expect(err).to.not.exist();
+
+      server.auth.strategy('default', 'whodat', 'required', {
+        url: 'https://my.app.com/credentials',
+        method: 'POST',
+        auth: {
+          username: 'me',
+          password: 'secret'
+        },
+        cache: {
+          expiresIn: 20 * 1000,
+          segment: 'whodat'
+        }
+      });
+
+      server.route({
+        method: 'GET',
+        path: '/test',
+        handler: function(req, reply) {
+          reply({ foo: 'bar' }).code(200);
+        }
+      });
+
+      server.start(function(startErr) {
+        expect(startErr).to.not.exist();
+
+        server.inject(shot, function(res) {
+          post.done();
+
+          expect(res.statusCode).to.equal(401);
+
+          // second request should use cache and not need nock
+          server.inject(shot, function(res2) {
+            expect(res2.statusCode).to.equal(401);
+
+            server.stop(done);
+          });
+        });
+      });
+    });
+  });
 });
 
 describe('Query Param auth', function() {
