@@ -28,7 +28,7 @@
     "coveralls": "^3.0.0",
     "eslint": "^0.22.1",
     "eslint-config-vinli": "^2.1.0",
-    "hapi": "^8.4.0",
+    "hapi": "^16.6.2",
     "lab": "^5.5.0",
     "nock": "^2.9.1"
   },
