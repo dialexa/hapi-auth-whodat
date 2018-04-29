@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/dialexa/hapi-auth-whodat",
   "devDependencies": {
-    "code": "^1.3.0",
+    "code": "^5.2.0",
     "coveralls": "^3.0.0",
     "eslint": "^0.22.1",
     "eslint-config-vinli": "^2.1.0",
