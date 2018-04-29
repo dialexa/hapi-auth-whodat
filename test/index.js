@@ -22,15 +22,15 @@ describe('Authentication', function() {
   var server;
 
   beforeEach(function(done) {
-    server = new Hapi.Server({ debug: { log: [ 'error' ], request: [ 'error' ] } }).connection({ host: 'test' });
+    server = new Hapi.Server({ debug: { log: ['error'], request: ['error'] } }).connection({ host: 'test' });
     done();
   });
 
   it('should verify credentials with an external server with internal authentication with POST', function(done) {
     var post = nock('https://my.app.com').matchHeader('Authorization', 'Basic bWU6c2VjcmV0')
-                .post('/credentials', {
-                  credentials: { username: 'other_user', password: 'shhhhh' }
-                }).reply(200, { credentials: { authenticated: true } });
+      .post('/credentials', {
+        credentials: { username: 'other_user', password: 'shhhhh' }
+      }).reply(200, { credentials: { authenticated: true } });
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
@@ -65,8 +65,8 @@ describe('Authentication', function() {
 
   it('should verify credentials with an external server with internal authentication with GET', function(done) {
     var post = nock('https://my.app.com').matchHeader('Authorization', 'Basic bWU6c2VjcmV0')
-                .get('/credentials?app=foo&username=other_user&password=shhhhh')
-                .reply(200, { credentials: { authenticated: true } });
+      .get('/credentials?app=foo&username=other_user&password=shhhhh')
+      .reply(200, { credentials: { authenticated: true } });
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
@@ -101,8 +101,8 @@ describe('Authentication', function() {
 
   it('should verify credentials with an external server without internal authentication with GET', function(done) {
     var post = nock('https://my.app.com')
-                .get('/credentials?app=foo&username=other_user&password=shhhhh')
-                .reply(200, { credentials: { authenticated: true } });
+      .get('/credentials?app=foo&username=other_user&password=shhhhh')
+      .reply(200, { credentials: { authenticated: true } });
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
@@ -133,9 +133,9 @@ describe('Authentication', function() {
 
   it('should verify credentials with an external server with a differnt object name for POST', function(done) {
     var post = nock('https://my.app.com')
-                .post('/credentials', {
-                  foo: { username: 'other_user', password: 'shhhhh' }
-                }).reply(200, { credentials: { authenticated: true } });
+      .post('/credentials', {
+        foo: { username: 'other_user', password: 'shhhhh' }
+      }).reply(200, { credentials: { authenticated: true } });
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
@@ -200,8 +200,8 @@ describe('Authentication', function() {
 
   it('should verify credentials with an external server with custom username/password properties in GET', function(done) {
     var post = nock('https://my.app.com')
-                .get('/credentials?user_id=other_user&secretword=shhhhh')
-                .reply(200, { credentials: { authenticated: true } });
+      .get('/credentials?user_id=other_user&secretword=shhhhh')
+      .reply(200, { credentials: { authenticated: true } });
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
@@ -233,9 +233,9 @@ describe('Authentication', function() {
 
   it('should verify credentials with an external server with custom username/password properties in POST', function(done) {
     var post = nock('https://my.app.com')
-            .post('/credentials', {
-              user_id: 'other_user', secretword: 'shhhhh'
-            }).reply(200, { credentials: { authenticated: true } });
+      .post('/credentials', {
+        user_id: 'other_user', secretword: 'shhhhh'
+      }).reply(200, { credentials: { authenticated: true } });
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
@@ -283,9 +283,9 @@ describe('Pre-auth', function() {
 
   it('should not accept an unauthenticated request', function(done) {
     var post = nock('https://my.app.com').matchHeader('Authorization', 'Basic bWU6c2VjcmV0')
-                .post('/credentials', {
-                  credentials: { username: 'other_user', password: 'shhhhh' }
-                }).reply(200, { credentials: { authenticated: true } });
+      .post('/credentials', {
+        credentials: { username: 'other_user', password: 'shhhhh' }
+      }).reply(200, { credentials: { authenticated: true } });
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
@@ -319,9 +319,9 @@ describe('Pre-auth', function() {
 
   it('should not accept a request without a password', function(done) {
     var post = nock('https://my.app.com').matchHeader('Authorization', 'Basic bWU6c2VjcmV0')
-                .post('/credentials', {
-                  credentials: { username: 'other_user', password: 'shhhhh' }
-                }).reply(200, { credentials: { authenticated: true } });
+      .post('/credentials', {
+        credentials: { username: 'other_user', password: 'shhhhh' }
+      }).reply(200, { credentials: { authenticated: true } });
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
@@ -356,9 +356,9 @@ describe('Pre-auth', function() {
 
   it('should not accept a request without a username', function(done) {
     var post = nock('https://my.app.com').matchHeader('Authorization', 'Basic bWU6c2VjcmV0')
-                .post('/credentials', {
-                  credentials: { username: 'other_user', password: 'shhhhh' }
-                }).reply(200, { credentials: { authenticated: true } });
+      .post('/credentials', {
+        credentials: { username: 'other_user', password: 'shhhhh' }
+      }).reply(200, { credentials: { authenticated: true } });
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
@@ -393,9 +393,9 @@ describe('Pre-auth', function() {
 
   it('should not accept a request without a valid auth header', function(done) {
     var post = nock('https://my.app.com').matchHeader('Authorization', 'Basic bWU6c2VjcmV0')
-                .post('/credentials', {
-                  credentials: { username: 'other_user', password: 'shhhhh' }
-                }).reply(200, { credentials: { authenticated: true } });
+      .post('/credentials', {
+        credentials: { username: 'other_user', password: 'shhhhh' }
+      }).reply(200, { credentials: { authenticated: true } });
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
@@ -430,9 +430,9 @@ describe('Pre-auth', function() {
 
   it('should not accept a request without a valid auth header', function(done) {
     var post = nock('https://my.app.com').matchHeader('Authorization', 'Basic bWU6c2VjcmV0')
-                .post('/credentials', {
-                  credentials: { username: 'other_user', password: 'shhhhh' }
-                }).reply(200, { credentials: { authenticated: true } });
+      .post('/credentials', {
+        credentials: { username: 'other_user', password: 'shhhhh' }
+      }).reply(200, { credentials: { authenticated: true } });
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
@@ -467,9 +467,9 @@ describe('Pre-auth', function() {
 
   it('should not accept a request without a valid auth header', function(done) {
     var post = nock('https://my.app.com').matchHeader('Authorization', 'Basic bWU6c2VjcmV0')
-                .post('/credentials', {
-                  credentials: { username: 'other_user', password: 'shhhhh' }
-                }).reply(200, { credentials: { authenticated: true } });
+      .post('/credentials', {
+        credentials: { username: 'other_user', password: 'shhhhh' }
+      }).reply(200, { credentials: { authenticated: true } });
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
@@ -504,9 +504,9 @@ describe('Pre-auth', function() {
 
   it('should not accept a request without a valid auth header', function(done) {
     var post = nock('https://my.app.com').matchHeader('Authorization', 'Basic bWU6c2VjcmV0')
-                .post('/credentials', {
-                  credentials: { username: 'other_user', password: 'shhhhh' }
-                }).reply(200, { credentials: { authenticated: true } });
+      .post('/credentials', {
+        credentials: { username: 'other_user', password: 'shhhhh' }
+      }).reply(200, { credentials: { authenticated: true } });
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
@@ -555,9 +555,9 @@ describe('Bad Authentication', function() {
 
   it('should fail on credentials that fail authentication with an external server', function(done) {
     var post = nock('https://my.app.com').matchHeader('Authorization', 'Basic bWU6c2VjcmV0')
-                .post('/credentials', {
-                  credentials: { username: 'other_user', password: 'shhhhh' }
-                }).reply(200, { credentials: { result: 'failed' } });
+      .post('/credentials', {
+        credentials: { username: 'other_user', password: 'shhhhh' }
+      }).reply(200, { credentials: { result: 'failed' } });
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
@@ -592,9 +592,9 @@ describe('Bad Authentication', function() {
 
   it('should fail on good credentials when the auth creds fail basic auth with an external server', function(done) {
     var post = nock('https://my.app.com').matchHeader('Authorization', 'Basic bWU6c2VjcmV0')
-                .post('/credentials', {
-                  credentials: { username: 'other_user', password: 'shhhhh' }
-                }).reply(401, { credentials: { result: 'failed' } });
+      .post('/credentials', {
+        credentials: { username: 'other_user', password: 'shhhhh' }
+      }).reply(401, { credentials: { result: 'failed' } });
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
@@ -632,7 +632,7 @@ describe('Bad Authentication', function() {
       error: 'Bad Request',
       message: 'child "appId" fails because ["appId" with value " ba244680-8910-4a40-9e52-0f11069fda69" fails to match the required pattern: /^(([a-f\\d]{8}(-[a-f\\d]{4}){3}-[a-f\\d]{12}?)|_internal)$/]',
       statusCode: 400,
-      validation: { keys: [ 'name' ], source: 'params' }
+      validation: { keys: ['name'], source: 'params' }
     };
 
     var post = nock('https://my.app.com').matchHeader('Authorization', 'Basic bWU6c2VjcmV0')
@@ -725,8 +725,8 @@ describe('Credentials object', function() {
 
   it('should fill in credentials object with data from the external server', function(done) {
     var post = nock('https://my.app.com').matchHeader('Authorization', 'Basic bWU6c2VjcmV0')
-                .get('/credentials?username=other_user&password=shhhhh')
-                .reply(200, { credentials: { authenticated: true, name: 'frank' } });
+      .get('/credentials?username=other_user&password=shhhhh')
+      .reply(200, { credentials: { authenticated: true, name: 'frank' } });
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
@@ -763,8 +763,8 @@ describe('Credentials object', function() {
 
   it('should accept a credentials object with no object name', function(done) {
     var post = nock('https://my.app.com').matchHeader('Authorization', 'Basic bWU6c2VjcmV0')
-                .get('/credentials?username=other_user&password=shhhhh')
-                .reply(200, { authenticated: true, name: 'frank' });
+      .get('/credentials?username=other_user&password=shhhhh')
+      .reply(200, { authenticated: true, name: 'frank' });
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
@@ -805,7 +805,7 @@ describe('Bearer token auth', function() {
   var server;
 
   beforeEach(function(done) {
-    server = new Hapi.Server({ debug: { log: [ 'error' ], request: [ 'error' ] } });
+    server = new Hapi.Server({ debug: { log: ['error'], request: ['error'] } });
     server.connection({ host: '127.0.0.1' });
     done();
   });
@@ -817,9 +817,9 @@ describe('Bearer token auth', function() {
 
   it('should accept a bearer token', function(done) {
     var post = nock('https://my.app.com').matchHeader('Authorization', 'Basic bWU6c2VjcmV0')
-                .post('/credentials', {
-                  credentials: { token: 'asdfasdf' }
-                }).reply(200, { credentials: { authenticated: true } });
+      .post('/credentials', {
+        credentials: { token: 'asdfasdf' }
+      }).reply(200, { credentials: { authenticated: true } });
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
@@ -854,9 +854,9 @@ describe('Bearer token auth', function() {
 
   it('should add the id from the credentials response', function(done) {
     var post = nock('https://my.app.com').matchHeader('Authorization', 'Basic bWU6c2VjcmV0')
-                .post('/credentials', {
-                  credentials: { token: 'asdfasdf' }
-                }).reply(200, { credentials: { authenticated: true, id: 'other_user' } });
+      .post('/credentials', {
+        credentials: { token: 'asdfasdf' }
+      }).reply(200, { credentials: { authenticated: true, id: 'other_user' } });
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
@@ -1006,7 +1006,7 @@ describe('Query Param auth', function() {
   var server;
 
   beforeEach(function(done) {
-    server = new Hapi.Server({ debug: { log: [ 'error' ], request: [ 'error' ] } });
+    server = new Hapi.Server({ debug: { log: ['error'], request: ['error'] } });
     server.connection({ host: '127.0.0.1' });
     done();
   });
@@ -1018,9 +1018,9 @@ describe('Query Param auth', function() {
 
   it('should take an option to set token query param name', function(done) {
     var post = nock('https://my.app.com').matchHeader('Authorization', 'Basic bWU6c2VjcmV0')
-                .post('/credentials', {
-                  credentials: { token: 'asdfasdf' }
-                }).reply(200, { credentials: { authenticated: true } });
+      .post('/credentials', {
+        credentials: { token: 'asdfasdf' }
+      }).reply(200, { credentials: { authenticated: true } });
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
@@ -1053,9 +1053,9 @@ describe('Query Param auth', function() {
 
   it('should default token query param name to token', function(done) {
     var post = nock('https://my.app.com').matchHeader('Authorization', 'Basic bWU6c2VjcmV0')
-                .post('/credentials', {
-                  credentials: { token: 'asdfasdf' }
-                }).reply(200, { credentials: { authenticated: true } });
+      .post('/credentials', {
+        credentials: { token: 'asdfasdf' }
+      }).reply(200, { credentials: { authenticated: true } });
 
     server.register(require('../'), function(err) {
       expect(err).to.not.exist();
