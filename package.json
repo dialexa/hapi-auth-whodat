@@ -18,11 +18,22 @@
     "basicauth"
   ],
   "author": "Powell Kinney <powell@dialexa.com>",
+  "contributors": [{
+    "name": "Martin Arista",
+    "url": "https://www.mrtnrst.com"
+  }],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/dialexa/hapi-auth-whodat/issues"
   },
   "homepage": "https://github.com/dialexa/hapi-auth-whodat",
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "boom": "^7.2.0",
+    "hoek": "^5.0.3",
+    "joi": "^13.2.0",
+    "yarp": "^1.0.0"
+  },
   "devDependencies": {
     "@dialexa/eslint-config-dialexa": "^4.1.1",
     "code": "^5.2.0",
@@ -31,12 +42,5 @@
     "hapi": "^16.6.2",
     "lab": "^5.5.0",
     "nock": "^9.2.5"
-  },
-  "dependencies": {
-    "bluebird": "^3.5.1",
-    "boom": "^7.2.0",
-    "hoek": "^5.0.3",
-    "joi": "^13.2.0",
-    "yarp": "^1.0.0"
   }
 }
